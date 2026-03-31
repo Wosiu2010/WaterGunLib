@@ -114,3 +114,7 @@ C:\Users\Admin\source\repos\WaterGunLib\WaterGunLib\bin\Debug\netstandard2.1\0Ha
 C:\Users\Admin\source\repos\WaterGunLib\WaterGunLib\bin\Debug\netstandard2.1\BepInEx.xml
 C:\Users\Admin\source\repos\WaterGunLib\WaterGunLib\bin\Debug\netstandard2.1\MonoMod.Utils.xml
 C:\Users\Admin\source\repos\WaterGunLib\WaterGunLib\bin\Debug\netstandard2.1\MonoMod.RuntimeDetour.xml
+C:\Users\Admin\source\repos\WaterGunLib\WaterGunLib\bin\Debug\netstandard2.1\DunGen.dll
+C:\Users\Admin\source\repos\WaterGunLib\WaterGunLib\bin\Debug\netstandard2.1\Unity.ProBuilder.dll
+C:\Users\Admin\source\repos\WaterGunLib\WaterGunLib\bin\Debug\netstandard2.1\Unity.ProBuilder.Poly2Tri.dll
+C:\Users\Admin\source\repos\WaterGunLib\WaterGunLib\bin\Debug\netstandard2.1\Unity.ProBuilder.KdTree.dll

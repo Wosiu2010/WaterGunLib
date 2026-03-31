@@ -24,11 +24,11 @@ namespace WaterGunLib
                 SpawnRandomItem(spawnPos.position);
         }
 
-        public GameObject SpawnRandomItem(Vector3 position)
+        public void SpawnRandomItem(Vector3 position)
         {
-            if (!NetworkManager.Singleton.IsServer) return null;
+            if (!NetworkManager.Singleton.IsServer) return;
 
-            if (possibleItemNames.Count() == 0) return null;
+            if (possibleItemNames.Count() == 0) return;
 
             int random = UnityEngine.Random.Range(0, possibleItemNames.Count());
             Item itemProperties = ItemManagement.GetItemFromName(possibleItemNames[random]);
@@ -45,8 +45,29 @@ namespace WaterGunLib
             {
                 item.GetComponent<NetworkObject>().Spawn();
             }
+        }
 
-            return item;
+        public void SpawnRandomItem(Transform transform)
+        {
+            if (!NetworkManager.Singleton.IsServer) return;
+
+            if (possibleItemNames.Count() == 0) return;
+
+            int random = UnityEngine.Random.Range(0, possibleItemNames.Count());
+            Item itemProperties = ItemManagement.GetItemFromName(possibleItemNames[random]);
+            GameObject item = Instantiate(ItemManagement.GetItemFromName(possibleItemNames[random]).spawnPrefab, transform.position, Quaternion.identity, null);
+            Debug.Log($"Spawning item: {item}");
+            if (itemProperties.isScrap)
+            {
+                int randomValue = UnityEngine.Random.Range(itemProperties.minValue, itemProperties.maxValue);
+                item.GetComponent<GrabbableObject>().SetScrapValue(Mathf.RoundToInt(randomValue / 2));
+
+                item.GetComponent<NetworkObject>().Spawn();
+            }
+            else
+            {
+                item.GetComponent<NetworkObject>().Spawn();
+            }
         }
     }
 }

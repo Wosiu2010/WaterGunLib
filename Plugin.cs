@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Xml.Schema;
 using BepInEx;
-using BepInEx.Logging;
-using DunGen;
 using HarmonyLib;
-using HarmonyLib.Tools;
 using Unity.Netcode;
 using UnityEngine;
 using WaterGunLib.Bundles;
@@ -25,7 +20,7 @@ namespace WaterGunLib
     public class Plugin : BaseUnityPlugin
     {
         const string GUID = "WaterGun.WaterGunLib";
-        const string VER = "1.3.2";
+        const string VER = "1.4.0";
         const string NAME = "WaterGunLib";
 
 
@@ -133,27 +128,15 @@ namespace WaterGunLib
                         {
                             if (key.spawnType == SpawnType.Indoor)
                             {
-                                level.Enemies.Add(new SpawnableEnemyWithRarity
-                                {
-                                    enemyType = key.enemyType,
-                                    rarity = key.rarity
-                                });
+                                level.Enemies.Add(new SpawnableEnemyWithRarity(key.enemyType, key.rarity));
                             }
                             else if (key.spawnType == SpawnType.Outdoor)
                             {
-                                level.OutsideEnemies.Add(new SpawnableEnemyWithRarity
-                                {
-                                    enemyType = key.enemyType,
-                                    rarity= key.rarity
-                                });
+                                level.OutsideEnemies.Add(new SpawnableEnemyWithRarity(key.enemyType, key.rarity));
                             }
                             else if (key.spawnType == SpawnType.DayTime)
                             {
-                                level.DaytimeEnemies.Add(new SpawnableEnemyWithRarity
-                                {
-                                    enemyType = key.enemyType,
-                                    rarity = key.rarity
-                                });
+                                level.DaytimeEnemies.Add(new SpawnableEnemyWithRarity(key.enemyType, key.rarity));
                             }
                         }
                     }
@@ -166,22 +149,14 @@ namespace WaterGunLib
                         if (value.Contains("All"))
                         {
                             List<SpawnableOutsideObjectWithRarity> objectlist = level.spawnableOutsideObjects.ToList();
-                            objectlist.Add(new SpawnableOutsideObjectWithRarity
-                            {
-                                spawnableObject = key.outsideObject,
-                                randomAmount = key.randomAmount
-                            });
+                            objectlist.Add(new SpawnableOutsideObjectWithRarity(key.outsideObject, key.randomAmount));
                             level.spawnableOutsideObjects = objectlist.ToArray();
                         }
 
                         if (value.Contains(level.PlanetName) && !value.Contains("All"))
                         {
                             List<SpawnableOutsideObjectWithRarity> objectlist = level.spawnableOutsideObjects.ToList();
-                            objectlist.Add(new SpawnableOutsideObjectWithRarity
-                            {
-                                spawnableObject = key.outsideObject,
-                                randomAmount = key.randomAmount
-                            });
+                            objectlist.Add(new SpawnableOutsideObjectWithRarity(key.outsideObject, key.randomAmount));
                             level.spawnableOutsideObjects = objectlist.ToArray();
                         }
                     }
@@ -233,11 +208,7 @@ namespace WaterGunLib
 
                     if (!infoKeywordNounsList.Any(x => x.noun.word == keyword.word))
                     {
-                        infoKeywordNounsList.Add(new CompatibleNoun
-                        {
-                            noun = keyword,
-                            result = key.infoNode
-                        });
+                        infoKeywordNounsList.Add(new CompatibleNoun(keyword, key.infoNode));
 
                         infoKeyword.compatibleNouns = infoKeywordNounsList.ToArray();
                     }
@@ -300,20 +271,12 @@ namespace WaterGunLib
                             {
                                 if (item.Value.Contains("All"))
                                 {
-                                    level.spawnableScrap.Add(new SpawnableItemWithRarity
-                                    {
-                                        rarity = item.Key.rarity,
-                                        spawnableItem = item.Key.item
-                                    });
+                                    level.spawnableScrap.Add(new SpawnableItemWithRarity(item.Key.item, item.Key.rarity));
                                 }
 
                                 if (item.Value.Contains(level.PlanetName) && !item.Value.Contains("All"))
                                 {
-                                    level.spawnableScrap.Add(new SpawnableItemWithRarity
-                                    {
-                                        rarity = item.Key.rarity,
-                                        spawnableItem = item.Key.item
-                                    });
+                                    level.spawnableScrap.Add(new SpawnableItemWithRarity(item.Key.item, item.Key.rarity));
                                 }
                             }
                         }
@@ -375,16 +338,8 @@ namespace WaterGunLib
                         buyNode1.itemCost = item.Key.item.creditsWorth;
                         buyNode1.terminalOptions = new CompatibleNoun[2]
                         {
-                            new CompatibleNoun()
-                            {
-                                noun = __instance.terminalNodes.allKeywords.First(keyword2 => keyword2.word == "confirm"),
-                                result = buyNode2
-                            },
-                            new CompatibleNoun()
-                            {
-                                noun = __instance.terminalNodes.allKeywords.First(keyword2 => keyword2.word == "deny"),
-                                result = cancelPurchaseNode
-                            }
+                            new CompatibleNoun(__instance.terminalNodes.allKeywords.First(keyword2 => keyword2.word == "confirm"), buyNode2),
+                            new CompatibleNoun(__instance.terminalNodes.allKeywords.First(keyword2 => keyword2.word == "deny"), cancelPurchaseNode)
                         };
 
                         var allKeywords = __instance.terminalNodes.allKeywords.ToList();
@@ -392,11 +347,7 @@ namespace WaterGunLib
                         __instance.terminalNodes.allKeywords = allKeywords.ToArray();
 
                         var nouns = buyKeyword.compatibleNouns.ToList();
-                        nouns.Add(new CompatibleNoun()
-                        {
-                            noun = keyword,
-                            result = buyNode1
-                        });
+                        nouns.Add(new CompatibleNoun(keyword, buyNode1));
                         buyKeyword.compatibleNouns = nouns.ToArray();
 
                         var itemInfo = item.Key.infoNode;
@@ -412,11 +363,7 @@ namespace WaterGunLib
                         __instance.terminalNodes.allKeywords = allKeywords.ToArray();
 
                         var itemInfoNouns = infoKeyword.compatibleNouns.ToList();
-                        itemInfoNouns.Add(new CompatibleNoun()
-                        {
-                            noun = keyword,
-                            result = itemInfo
-                        });
+                        itemInfoNouns.Add(new CompatibleNoun(keyword, itemInfo));
                         infoKeyword.compatibleNouns = itemInfoNouns.ToArray();
 
                     }
@@ -469,16 +416,8 @@ namespace WaterGunLib
                     buyNode1.itemCost = item.price;
                     buyNode1.terminalOptions = new CompatibleNoun[2]
                     {
-                        new CompatibleNoun()
-                        {
-                            noun = __instance.terminalNodes.allKeywords.First(keyword2 => keyword2.word == "confirm"),
-                            result = buyNode2
-                        },
-                        new CompatibleNoun()
-                        {
-                            noun = __instance.terminalNodes.allKeywords.First(keyword2 => keyword2.word == "deny"),
-                            result = cancelPurchaseNode
-                        }
+                        new CompatibleNoun(__instance.terminalNodes.allKeywords.First(keyword2 => keyword2.word == "confirm"), buyNode2),
+                        new CompatibleNoun(__instance.terminalNodes.allKeywords.First(keyword2 => keyword2.word == "deny"), cancelPurchaseNode)
                     };
 
                     if (item.storeType == StoreType.Decor)
@@ -495,11 +434,7 @@ namespace WaterGunLib
                     __instance.terminalNodes.allKeywords = allKeywords.ToArray();
 
                     var nouns = buyKeyword.compatibleNouns.ToList();
-                    nouns.Add(new CompatibleNoun()
-                    {
-                        noun = keyword,
-                        result = buyNode1
-                    });
+                    nouns.Add(new CompatibleNoun(keyword, buyNode1));
                     buyKeyword.compatibleNouns = nouns.ToArray();
 
                     var itemInfo = item.itemInfo;
@@ -515,11 +450,7 @@ namespace WaterGunLib
                     __instance.terminalNodes.allKeywords = allKeywords.ToArray();
 
                     var itemInfoNouns = infoKeyword.compatibleNouns.ToList();
-                    itemInfoNouns.Add(new CompatibleNoun()
-                    {
-                        noun = keyword,
-                        result = itemInfo
-                    });
+                    itemInfoNouns.Add(new CompatibleNoun(keyword, itemInfo));
                     infoKeyword.compatibleNouns = itemInfoNouns.ToArray();
 
                     
