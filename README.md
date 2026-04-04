@@ -21,6 +21,9 @@ Created most likely only for MonesMonesowicz but might be used by other creators
 ## ItemsApi
 - Allows registering items into the base game
 
+## GrassShaderRestorer
+- Restores the grass shader introduced in v80
+
 ## TeleportTarget.cs
 - Allows teleporting local PlayerControllerB to a desired destination + Customizing sounds
 
