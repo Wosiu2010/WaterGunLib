@@ -20,7 +20,7 @@ namespace WaterGunLib
     public class Plugin : BaseUnityPlugin
     {
         const string GUID = "WaterGun.WaterGunLib";
-        const string VER = "1.4.5";
+        const string VER = "1.5.0";
         const string NAME = "WaterGunLib";
 
 

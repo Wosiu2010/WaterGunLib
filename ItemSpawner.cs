@@ -69,5 +69,28 @@ namespace WaterGunLib
                 item.GetComponent<NetworkObject>().Spawn();
             }
         }
+
+        public void SpawnRandomItem()
+        {
+            if (!NetworkManager.Singleton.IsServer) return;
+
+            if (possibleItemNames.Count() == 0) return;
+
+            int random = UnityEngine.Random.Range(0, possibleItemNames.Count());
+            Item itemProperties = ItemManagement.GetItemFromName(possibleItemNames[random]);
+            GameObject item = Instantiate(ItemManagement.GetItemFromName(possibleItemNames[random]).spawnPrefab, spawnPos.position, Quaternion.identity, null);
+            Debug.Log($"Spawning item: {item}");
+            if (itemProperties.isScrap)
+            {
+                int randomValue = UnityEngine.Random.Range(itemProperties.minValue, itemProperties.maxValue);
+                item.GetComponent<GrabbableObject>().SetScrapValue(Mathf.RoundToInt(randomValue / 2));
+
+                item.GetComponent<NetworkObject>().Spawn();
+            }
+            else
+            {
+                item.GetComponent<NetworkObject>().Spawn();
+            }
+        }
     }
 }
